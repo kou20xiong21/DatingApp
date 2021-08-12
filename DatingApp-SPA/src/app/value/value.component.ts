@@ -7,15 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./value.component.css']
 })
 export class ValueComponent implements OnInit {
-  value: any;
+  values: any;
 
+  // tslint:disable-next-line: space-before-function-paren
   constructor (private http: HttpClient) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.getValues();
   }
 
-  getValues() {
-
+  getValues(): any {
+    this.http.get('http://localhost:56436/api/values').subscribe(response =>
+      this.values = response);
   }
 
 }
