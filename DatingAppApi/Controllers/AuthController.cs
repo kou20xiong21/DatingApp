@@ -11,9 +11,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DatingAppApi.Controllers
 {
+    //[Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
