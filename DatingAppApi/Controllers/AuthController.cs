@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace DatingAppApi.Controllers
 {
@@ -21,6 +22,7 @@ namespace DatingAppApi.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthRepository _Repo;
+        private readonly IConfiguration _config;
 
         public AuthController(IAuthRepository _repo)
         {
@@ -31,8 +33,11 @@ namespace DatingAppApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
         {
+            if (!string.IsNullOrEmpty(userForRegisterDto.UserName))
+            {
+                userForRegisterDto.UserName = userForRegisterDto.UserName.ToLower();
+            }
 
-            userForRegisterDto.UserName = userForRegisterDto.UserName.ToLower();
 
             if (await _Repo.UserExists(userForRegisterDto.UserName))
             {
@@ -65,8 +70,9 @@ namespace DatingAppApi.Controllers
                 return Unauthorized();
             }
 
+            // generate token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("Super Secret Key");
+            var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings: Token").Value);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -78,7 +84,7 @@ namespace DatingAppApi.Controllers
 
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
+                    SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
