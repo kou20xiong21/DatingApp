@@ -17,31 +17,31 @@ using Microsoft.Extensions.Configuration;
 namespace DatingAppApi.Controllers
 {
     //[Authorize]
-    [AllowAnonymous]
+    //[AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly IAuthRepository _Repo;
-        private readonly IConfiguration _config;
+        private readonly IConfiguration _Config;
 
-        public AuthController(IAuthRepository _repo)
+        public AuthController(IAuthRepository repo, IConfiguration config)
         {
-            _Repo = _repo;
+            _Repo = repo;
+            _Config = config;
         }
 
         // GET: AuthController
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
         {
-            if (!string.IsNullOrEmpty(userForRegisterDto.UserName))
+            if (!string.IsNullOrEmpty(userForRegisterDto.Username))
             {
-                userForRegisterDto.UserName = userForRegisterDto.UserName.ToLower();
+                userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
             }
 
-
-            if (await _Repo.UserExists(userForRegisterDto.UserName))
+            if (await _Repo.UserExists(userForRegisterDto.Username))
             {
-                ModelState.AddModelError("UserName", "Username is already taken!");
+                ModelState.AddModelError("Username", " Username is already taken!");
             }
 
             if (!ModelState.IsValid)
@@ -51,7 +51,7 @@ namespace DatingAppApi.Controllers
 
             var userToCreate = new User
             {
-                UserName = userForRegisterDto.UserName
+                Username = userForRegisterDto.Username
             };
 
             var createUser = await _Repo.Register(userToCreate, userForRegisterDto.Password);
@@ -61,36 +61,45 @@ namespace DatingAppApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserFromLoginDto userFromLoginDto)
+        public async Task<IActionResult> Login([FromBody] UserForLoginDto userForLoginDto)
         {
-            var userFromRepo = await _Repo.Login(userFromLoginDto.Username, userFromLoginDto.Password);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            if (userFromLoginDto == null)
+            var userFromRepo = await _Repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
+
+            if (userFromRepo == null)
             {
                 return Unauthorized();
             }
 
-            // generate token
+
+            // generate (JWT) JSON Web Token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings: Token").Value);
+            var key = Encoding.ASCII.GetBytes("super secret key");
+            // var key = Encoding.ASCII.GetBytes(_Config.GetSection("AppSettings:token").Value);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                    new Claim(ClaimTypes.Name, userFromRepo.UserName)
+                    new Claim(ClaimTypes.Name, userFromRepo.Username)
                 }),
 
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                Expires = DateTime.Now.AddDays(1),  // Token time expires 24 hours/1 day from creation time
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
 
+            // create token
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new { tokenString });
+            return Ok(new { tokenString }); // pass token back as a new Objects
         }
     }
 }
