@@ -16,6 +16,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { RouterModule } from '@angular/router';
 import { appRoutes } from './routes';
 import { BsDropdownModule } from 'ngx-bootstrap';
+import { AuthGuard } from './_guards/auth.guard';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,9 @@ import { BsDropdownModule } from 'ngx-bootstrap';
   ],
   providers: [
     AuthService,
-    AlertifyService],
+    AlertifyService,
+    AuthGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

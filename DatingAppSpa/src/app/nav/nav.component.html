@@ -18,9 +18,15 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav" *ngIf="loggedIn()">
-        <li><a [routerLink]="['/members']">Matches</a></li>
-        <li><a [routerLink]="['/lists']">Lists</a></li>
-        <li><a [routerLink]="['/messages']">Messages</a></li>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/members']">Matches</a>
+        </li>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/lists']">Lists</a>
+        </li>
+        <li routerLinkActive="active">
+          <a [routerLink]="['/messages']">Messages</a>
+        </li>
       </ul>
       <form
         *ngIf="!loggedIn()"
@@ -60,10 +66,10 @@
       </form>
 
       <ul *ngIf="loggedIn()" class="nav navbar-nav navbar-right">
-        <li><a (click)="logout()">Logout</a></li>
+        <!-- <li><a (click)="logout()">Logout</a></li> -->
         <li class="dropdown" dropdown>
           <a
-            href="#"
+            (click)="(false)"
             class="dropdown-toggle"
             data-toggle="dropdown"
             dropdownToggle
