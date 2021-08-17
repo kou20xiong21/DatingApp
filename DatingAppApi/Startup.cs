@@ -1,4 +1,5 @@
-﻿using DatingAppApi.Data;
+﻿using AutoMapper;
+using DatingAppApi.Data;
 using DatingAppApi.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -36,7 +37,11 @@ namespace DatingAppApi
             var key = Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:token").Value);
 
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
+                opt =>
+                {
+                    opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
             services.AddCors();
             services.AddScoped<IAuthRepository, AuthRepository>();
 
@@ -51,10 +56,15 @@ namespace DatingAppApi
             //            ValidateAudience = false
             //        };
             //    });
+
+            services.AddTransient<Seed>();
+            services.AddScoped<IDataRepository, DataRepository>();
+            services.AddAutoMapper();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
         {
             if (env.IsDevelopment())
             {
@@ -80,6 +90,7 @@ namespace DatingAppApi
                 });
             }
 
+            // seeder.SeedUsers(); //commented this line to prevent recreate of SEED DATA each time API RUNS
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
             //app.UseAuthentication();
             app.UseMvc();

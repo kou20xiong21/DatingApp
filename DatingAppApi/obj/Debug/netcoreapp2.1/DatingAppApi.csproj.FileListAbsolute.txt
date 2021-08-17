@@ -15,3 +15,4 @@ C:\Users\Owner\Source\repos\Demo\DatingApp-1\DatingAppApi\obj\Debug\netcoreapp2.
 C:\Users\Owner\Source\repos\Demo\DatingApp-1\DatingAppApi\obj\Debug\netcoreapp2.1\DatingAppApi.dll
 C:\Users\Owner\Source\repos\Demo\DatingApp-1\DatingAppApi\obj\Debug\netcoreapp2.1\DatingAppApi.pdb
 C:\Users\Owner\Source\repos\Demo\DatingApp-1\DatingAppApi\obj\Debug\netcoreapp2.1\DatingAppApi.genruntimeconfig.cache
+C:\Users\Owner\Source\repos\Demo\DatingApp-1\DatingAppApi\bin\Debug\netcoreapp2.1\Data\UserSeedData.json
