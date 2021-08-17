@@ -78,8 +78,11 @@ namespace DatingAppApi.Controllers
 
             // generate (JWT) JSON Web Token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("super secret key");
-            // var key = Encoding.ASCII.GetBytes(_Config.GetSection("AppSettings:token").Value);
+            //var key = Encoding.ASCII.GetBytes("super secret key");
+            var key = Encoding.ASCII.GetBytes(_Config.GetSection("AppSettings:token").Value);
+
+            // the token key is set on appsettings.json
+            // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config.GetSection("AppSettings:token").Value));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
