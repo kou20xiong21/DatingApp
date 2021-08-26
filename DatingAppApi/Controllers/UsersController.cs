@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DatingAppApi.Controllers
@@ -43,5 +44,50 @@ namespace DatingAppApi.Controllers
 
             return Ok(userToReturn);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserForUpdateDto userForUpdateDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var claimUserId = 0;
+            var currentUserId = 0;
+
+            //if (User.FindFirst(ClaimTypes.NameIdentifier).Value != null)
+            if ((User.FindFirst(ClaimTypes.NameIdentifier).Value).Length.ToString() != null)
+            {
+                claimUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                currentUserId = claimUserId;
+
+                var userFromRepo = await _Repo.GetUser(id);
+
+                if (userFromRepo == null)
+                {
+                    return NotFound($"Could not find user with ID of {id}");
+                }
+
+                if (currentUserId != userFromRepo.Id)
+                {
+                    return Unauthorized();
+                }
+
+                _Mapper.Map(userForUpdateDto, userFromRepo);
+
+                if (await _Repo.SaveAll())
+                {
+                    return NoContent();
+                }
+
+                throw new Exception($"Updating user {id} failed on save!");
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
     }
 }

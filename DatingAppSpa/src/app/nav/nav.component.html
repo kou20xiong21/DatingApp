@@ -77,7 +77,9 @@
           ></a>
           <ul class="dropdown-menu" *dropdownMenu>
             <li>
-              <a href="#"> <i class="fa fa-user"></i>Edit Profile</a>
+              <a [routerLink]="['/member/edit']">
+                <i class="fa fa-user"></i>Edit Profile</a
+              >
             </li>
             <li>
               <a (click)="logout()"><i class="fa fa-sign-out"></i>Logout</a>

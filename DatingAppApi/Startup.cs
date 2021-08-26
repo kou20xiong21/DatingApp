@@ -45,17 +45,17 @@ namespace DatingAppApi
             services.AddCors();
             services.AddScoped<IAuthRepository, AuthRepository>();
 
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuerSigningKey = true,
-            //            IssuerSigningKey = new SymmetricSecurityKey(key),
-            //            ValidateIssuer = false,
-            //            ValidateAudience = false
-            //        };
-            //    });
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
 
             services.AddTransient<Seed>();
             services.AddScoped<IDataRepository, DataRepository>();
@@ -92,7 +92,7 @@ namespace DatingAppApi
 
             // seeder.SeedUsers(); //commented this line to prevent recreate of SEED DATA each time API RUNS
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
-            //app.UseAuthentication();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
