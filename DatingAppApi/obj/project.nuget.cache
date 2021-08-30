@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "DElcQbzzC9vxWboKLupuUwyPbtEgyEVKAV29jqrYy5v7RhpYfuEfuH81vQf/tP210FhIr8EKCEvHsywzzlYs8g==",
+  "dgSpecHash": "6jUAqCt582hKk7HJwQYIcWKsVk2aD4wq43Rd9lQ9YR3UIBVhgUdyqnjXGxuqwiuUMdYYeui7LH8j2X7Nqwq6BQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Owner\\Source\\repos\\Demo\\DatingApp-1\\DatingAppApi\\DatingAppApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Owner\\.nuget\\packages\\automapper\\6.1.1\\automapper.6.1.1.nupkg.sha512",
     "C:\\Users\\Owner\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\3.1.0\\automapper.extensions.microsoft.dependencyinjection.3.1.0.nupkg.sha512",
+    "C:\\Users\\Owner\\.nuget\\packages\\cloudinarydotnet\\1.1.0\\cloudinarydotnet.1.1.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.aspnet.webapi.client\\5.2.6\\microsoft.aspnet.webapi.client.5.2.6.nupkg.sha512",
     "C:\\Users\\Owner\\.nuget\\packages\\microsoft.aspnetcore\\2.1.7\\microsoft.aspnetcore.2.1.7.nupkg.sha512",
     "C:\\Users\\Owner\\.nuget\\packages\\microsoft.aspnetcore.antiforgery\\2.1.1\\microsoft.aspnetcore.antiforgery.2.1.1.nupkg.sha512",

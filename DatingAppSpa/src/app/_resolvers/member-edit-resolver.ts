@@ -7,13 +7,13 @@ import { Observable } from 'rxjs/';
 import { AuthService } from './../_services/auth.service';
 
 @Injectable()
-export class MemberEditResolver implements Resolve<User>{
+export class MemberEditResolver implements Resolve<User> {
 
 	constructor (private userService: UserService, private alertifyService: AlertifyService,
 		private router: Router, private authService: AuthService) {
 	}
 
-	resolve(router: ActivatedRouteSnapshot): Observable<User> {
+	resolve(route: ActivatedRouteSnapshot): Observable<User> {
 		return this.userService.getUser(this.authService.decodedToken.nameid).catch(error => {
 			this.alertifyService.error('Problem retrieving data');
 			this.router.navigate(['/members']);

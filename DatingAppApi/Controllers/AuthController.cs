@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 
 namespace DatingAppApi.Controllers
 {
@@ -23,40 +24,39 @@ namespace DatingAppApi.Controllers
     {
         private readonly IAuthRepository _Repo;
         private readonly IConfiguration _Config;
+        private readonly IMapper _Mapper;
 
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
             _Repo = repo;
             _Config = config;
+            _Mapper = mapper;
         }
 
         // GET: AuthController
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserForRegisterDto userForRegisterDto)
         {
-            if (!string.IsNullOrEmpty(userForRegisterDto.Username))
+            // validate request
+            if (!ModelState.IsValid)
             {
-                userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
+                return BadRequest(ModelState);
             }
+
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
             if (await _Repo.UserExists(userForRegisterDto.Username))
             {
                 ModelState.AddModelError("Username", " Username is already taken!");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var userToCreate = _Mapper.Map<User>(userForRegisterDto);
 
-            var userToCreate = new User
-            {
-                Username = userForRegisterDto.Username
-            };
+            User createdUser = await _Repo.Register(userToCreate, userForRegisterDto.Password);
 
-            var createUser = await _Repo.Register(userToCreate, userForRegisterDto.Password);
+            var userToReturn = _Mapper.Map<UserForDetailedDto>(createdUser);
 
-            return StatusCode(201);
+            return CreatedAtRoute("GetUser", new { controler = "User", id = createdUser.Id }, userToReturn);
 
         }
 
@@ -75,14 +75,13 @@ namespace DatingAppApi.Controllers
                 return Unauthorized();
             }
 
-
             // generate (JWT) JSON Web Token
             var tokenHandler = new JwtSecurityTokenHandler();
             //var key = Encoding.ASCII.GetBytes("super secret key");
-            var key = Encoding.ASCII.GetBytes(_Config.GetSection("AppSettings:token").Value);
+            var key = Encoding.ASCII.GetBytes(_Config.GetSection("AppSettings:Token").Value);
 
             // the token key is set on appsettings.json
-            // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config.GetSection("AppSettings:token").Value));
+            // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Config.GetSection("AppSettings:Token").Value));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -101,8 +100,8 @@ namespace DatingAppApi.Controllers
             // create token
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
-
-            return Ok(new { tokenString }); // pass token back as a new Objects
+            var user = _Mapper.Map<UserForListDto>(userFromRepo);
+            return Ok(new { tokenString, user }); // pass token back as a new Objects
         }
     }
 }

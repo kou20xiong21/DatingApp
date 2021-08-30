@@ -6,7 +6,7 @@
     <div class="col-sm-4">
       <div class="panel panel-default profile-border">
         <img
-          src="{{ user.photoUrl }}"
+          src="{{ user.photoUrl ? user.photoUrl : '../../../assets/user.png' }}"
           alt="{{ user.knownAs }}"
           class="profile-image thumbnail"
         />

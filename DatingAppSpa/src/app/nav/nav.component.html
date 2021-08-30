@@ -28,11 +28,12 @@
           <a [routerLink]="['/messages']">Messages</a>
         </li>
       </ul>
+
       <form
         *ngIf="!loggedIn()"
-        class="navbar-form navbar-right"
-        (ngSubmit)="login(loginForm)"
         #loginForm="ngForm"
+        class="navbar-form navbar-right"
+        (ngSubmit)="login()"
       >
         <div class="form-group">
           <input
@@ -66,23 +67,23 @@
       </form>
 
       <ul *ngIf="loggedIn()" class="nav navbar-nav navbar-right">
-        <!-- <li><a (click)="logout()">Logout</a></li> -->
+        <li>
+          <img src="{{ photoUrl }}" alt="" />
+        </li>
         <li class="dropdown" dropdown>
-          <a
-            (click)="(false)"
-            class="dropdown-toggle"
-            data-toggle="dropdown"
-            dropdownToggle
-            >Welcome User <span class="caret"></span
+          <a (click)="(false)" class="dropdown-toggle" dropdownToggle
+            >Welcome {{ authService.decodedToken?.unique_name | titlecase }}
+            <span class="caret"></span
           ></a>
           <ul class="dropdown-menu" *dropdownMenu>
             <li>
-              <a [routerLink]="['/member/edit']">
-                <i class="fa fa-user"></i>Edit Profile</a
+              <a [routerLink]="['/member/edit']"
+                ><i class="fa fa-user"></i> Edit Profile</a
               >
             </li>
+            <li role="separator" class="divider"></li>
             <li>
-              <a (click)="logout()"><i class="fa fa-sign-out"></i>Logout</a>
+              <a (click)="logout()"><i class="fa fa-sign-out"></i> Logout</a>
             </li>
           </ul>
         </li>

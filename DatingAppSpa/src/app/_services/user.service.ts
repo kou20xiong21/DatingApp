@@ -23,7 +23,7 @@ export class UserService {
 			.catch(this.handleError);
 	}
 
-	getUser(id: number): Observable<User> {
+	getUser(id): Observable<User> {
 		return this.authHttp
 			.get(this.baseUrl + 'users/' + id)
 			.map(response => <User>response.json())
@@ -32,6 +32,14 @@ export class UserService {
 
 	updateUser(id: number, user: User) {
 		return this.authHttp.put(this.baseUrl + 'users/' + id, user).catch(this.handleError);
+	}
+
+	setMainPhoto(userId: number, id: number) {
+		return this.authHttp.post(this.baseUrl + 'users/' + userId + '/photos/' + id + '/setMain', {}).catch(this.handleError);
+	}
+
+	deletePhoto(userId: number, id: number) {
+		return this.authHttp.delete(this.baseUrl + 'users/' + userId + '/photos/' + id).catch(this.handleError);
 	}
 
 	private handleError(error: any) {
