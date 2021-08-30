@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-4">
-      <h1>Your Profile</h1>
+      <h1>Editing Your Profile</h1>
     </div>
     <div class="col-sm-8">
       <div class="alert alert-info" [hidden]="!editForm.dirty">
@@ -35,11 +35,11 @@
           </div>
           <div>
             <strong>Last Active:</strong>
-            <p>{{ user.lastActive }}</p>
+            <p>{{ user.lastActive | timeAgo }}</p>
           </div>
           <div>
             <strong>Member Since:</strong>
-            <p>{{ user.created }}</p>
+            <p>{{ user.created | date: "mediumDate" }}</p>
           </div>
           <div class="panel-footer">
             <button

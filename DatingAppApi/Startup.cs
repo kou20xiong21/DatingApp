@@ -61,7 +61,7 @@ namespace DatingAppApi
             services.AddScoped<IDataRepository, DataRepository>();
             services.AddAutoMapper();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-
+            services.AddScoped<LogUserActivity>();
 
         }
 
@@ -94,7 +94,7 @@ namespace DatingAppApi
 
             // seeder.SeedUsers(); //commented this line to prevent recreate of SEED DATA each time API RUNS
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
-            //app.UseAuthentication();
+            app.UseAuthentication();
             app.UseMvc();
         }
     }
